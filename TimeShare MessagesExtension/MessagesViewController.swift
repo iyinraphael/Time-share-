@@ -16,6 +16,9 @@ class MessagesViewController: MSMessagesAppViewController {
         // Do any additional setup after loading the view.
     }
     
+    @IBAction func createNewEvent(_ sender: UIButton) {
+    }
+    
     // MARK: - Conversation Handling
     
     override func willBecomeActive(with conversation: MSConversation) {
