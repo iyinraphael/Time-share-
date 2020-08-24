@@ -22,7 +22,6 @@ class EventViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
-
     /*
     // MARK: - Navigation
 
@@ -35,5 +34,27 @@ class EventViewController: UIViewController {
     
     @IBAction func saveSelectedDates(_ sender: UIButton) {
     }
+
+}
+
+    // MARK: - Tableview Datasource and Delegate
+extension EventViewController: UITableViewDataSource, UITableViewDelegate {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Date", for: indexPath)
+        cell.textLabel?.text = "Date goes here"
+        return cell
+    }
+    
 
 }

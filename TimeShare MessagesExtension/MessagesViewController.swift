@@ -17,7 +17,35 @@ class MessagesViewController: MSMessagesAppViewController {
     }
     
     @IBAction func createNewEvent(_ sender: UIButton) {
+        requestPresentationStyle(.expanded)
     }
+    
+    func displayEventViewController(conversation: MSConversation?, identifier: String) {
+        // 0: sanity check, is there a converstion?
+        guard let conversation = conversation else { return }
+        
+        // 1: create the child view controler
+        guard let vc = storyboard?.instantiateViewController(identifier: identifier) as? EventViewController else { return }
+        
+        // 2: add the child to the parent so that events are forwarded
+        addChild(vc)
+        
+        // 3: give the child a meaniful frame: make it fill our view
+        vc.view.frame = view.bounds
+        vc.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(vc.view)
+        
+        // 4: add Auto Layout constrainst so the child view continues to fill the full view
+        vc.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        vc.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        vc.view.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        vc.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
+        // 5: tell the child it has now moved to a new parent view controller
+        vc.didMove(toParent: self)
+        
+    }
+    
     
     // MARK: - Conversation Handling
     
@@ -59,6 +87,14 @@ class MessagesViewController: MSMessagesAppViewController {
         // Called before the extension transitions to a new presentation style.
     
         // Use this method to prepare for the change in presentation style.
+        for child in children {
+            child.willMove(toParent: nil)
+            child.view.removeFromSuperview()
+            child.removeFromParent()
+        }
+        if presentationStyle == .expanded {
+            displayEventViewController(conversation: activeConversation, identifier: "CreateEvent")
+        }
     }
     
     override func didTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
