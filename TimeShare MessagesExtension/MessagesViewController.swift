@@ -27,6 +27,8 @@ class MessagesViewController: MSMessagesAppViewController {
         // 1: create the child view controler
         guard let vc = storyboard?.instantiateViewController(identifier: identifier) as? EventViewController else { return }
         
+        vc.delegate = self
+        
         // 2: add the child to the parent so that events are forwarded
         addChild(vc)
         
@@ -43,6 +45,10 @@ class MessagesViewController: MSMessagesAppViewController {
         
         // 5: tell the child it has now moved to a new parent view controller
         vc.didMove(toParent: self)
+        
+    }
+    
+    func createMessage(with dates: [Date], votes: [Int]) {
         
     }
     

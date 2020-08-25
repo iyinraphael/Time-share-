@@ -49,7 +49,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="1U6-eX-acw">
-                                <rect key="frame" x="0.0" y="44" width="414" height="546"/>
+                                <rect key="frame" x="0.0" y="44" width="414" height="612"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Date" id="ywF-w5-mGT">
@@ -66,25 +66,15 @@
                                     <outlet property="delegate" destination="rfl-f4-Ece" id="XMV-D0-wti"/>
                                 </connections>
                             </tableView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xHy-CG-ycz">
-                                <rect key="frame" x="0.0" y="590" width="414" height="0.0"/>
-                                <subviews>
-                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" id="okc-zO-x7t">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="162"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                    </datePicker>
-                                </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" id="Pu0-Tn-olf"/>
-                                </constraints>
-                            </view>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="ymm-24-z7A">
                                 <rect key="frame" x="143" y="818" width="128" height="44"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1D7-d7-Oez">
                                         <rect key="frame" x="0.0" y="0.0" width="64" height="44"/>
                                         <state key="normal" title="Add Date"/>
+                                        <connections>
+                                            <action selector="addDate:" destination="rfl-f4-Ece" eventType="touchUpInside" id="gvu-Gd-PES"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="un2-L7-Qyp">
                                         <rect key="frame" x="64" y="0.0" width="64" height="44"/>
@@ -99,18 +89,19 @@
                                     <constraint firstAttribute="height" constant="44" id="pXh-UE-Nfr"/>
                                 </constraints>
                             </stackView>
+                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" id="okc-zO-x7t">
+                                <rect key="frame" x="0.0" y="656" width="414" height="162"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            </datePicker>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="ymm-24-z7A" firstAttribute="top" secondItem="xHy-CG-ycz" secondAttribute="bottom" constant="228" id="01M-kw-BDK"/>
                             <constraint firstItem="ymm-24-z7A" firstAttribute="centerX" secondItem="qGK-kO-pfa" secondAttribute="centerX" id="El2-83-2Bd"/>
-                            <constraint firstItem="xHy-CG-ycz" firstAttribute="top" secondItem="1U6-eX-acw" secondAttribute="bottom" id="FsJ-NB-KyZ"/>
                             <constraint firstItem="1U6-eX-acw" firstAttribute="top" secondItem="qGK-kO-pfa" secondAttribute="top" id="LZk-yy-Jgk"/>
                             <constraint firstItem="qGK-kO-pfa" firstAttribute="bottom" secondItem="ymm-24-z7A" secondAttribute="bottom" id="Qvg-rG-JYp"/>
                             <constraint firstItem="qGK-kO-pfa" firstAttribute="trailing" secondItem="1U6-eX-acw" secondAttribute="trailing" id="SAn-d2-ac3"/>
                             <constraint firstItem="1U6-eX-acw" firstAttribute="leading" secondItem="qGK-kO-pfa" secondAttribute="leading" id="Ztv-ec-c6b"/>
-                            <constraint firstItem="xHy-CG-ycz" firstAttribute="leading" secondItem="qGK-kO-pfa" secondAttribute="leading" id="c3b-Ed-jjc"/>
-                            <constraint firstItem="qGK-kO-pfa" firstAttribute="trailing" secondItem="xHy-CG-ycz" secondAttribute="trailing" id="gtG-XI-BsN"/>
+                            <constraint firstItem="okc-zO-x7t" firstAttribute="top" secondItem="1U6-eX-acw" secondAttribute="bottom" id="zyL-jZ-BwQ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="qGK-kO-pfa"/>
                     </view>
