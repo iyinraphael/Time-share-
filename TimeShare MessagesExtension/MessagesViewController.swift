@@ -26,7 +26,7 @@ class MessagesViewController: MSMessagesAppViewController {
         
         // 1: create the child view controler
         guard let vc = storyboard?.instantiateViewController(identifier: identifier) as? EventViewController else { return }
-        
+        vc.load(from: conversation.selectedMessage)
         vc.delegate = self
         
         // 2: add the child to the parent so that events are forwarded
@@ -49,17 +49,104 @@ class MessagesViewController: MSMessagesAppViewController {
     }
     
     func createMessage(with dates: [Date], votes: [Int]) {
+        // 1: return the extension to compact mode
+        requestPresentationStyle(.compact)
         
+        // 2: do a quick sanity check to make sure we have a conversation
+        guard let conversation = activeConversation else { return }
+        
+        // 3: convert all our dates and votes into URLQueryItem objects
+        var components = URLComponents()
+        var items = [URLQueryItem]()
+        
+        for (index, date) in dates.enumerated() {
+            let dateItem = URLQueryItem(name: "date-\(index)", value: string(from: date) )
+            items.append(dateItem)
+            
+            let voteItem = URLQueryItem(name: "vote-\(index)", value: String(votes[index]))
+            items.append(voteItem)
+        }
+        
+        components.queryItems = items
+        
+        // 4: use the existing session or create a new one
+        let session = conversation.selectedMessage?.session ?? MSSession()
+        
+        // 5: create a new message from the session and assign it the URL we creates from our dates and votes
+        let message = MSMessage(session: session)
+        message.url = components.url
+        
+        // 6: creat a blank, default message layout
+        let layout = MSMessageTemplateLayout()
+        layout.image = render(dates: dates)
+        layout.caption = "I voted"
+        message.layout = layout
+        
+        // 7: insert it into the conversation
+        conversation.insert(message) { error in
+            if let error = error {
+                print(error)
+            }
+        }
     }
     
+    func render(dates: [Date]) -> UIImage {
+        // define our 20-point padding
+        let inset: CGFloat = 20
+        
+        // create thr attributes for drawing using Dynamic Type so that we respect the user's font choices
+        let attributes = [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .body),
+                          NSAttributedString.Key.foregroundColor: UIColor.darkGray]
+        
+        // make a single strinf out all the dates
+        var stringToRender = ""
+        
+        dates.forEach {
+            stringToRender += DateFormatter.localizedString(from: $0, dateStyle: .long, timeStyle: .short) + "\n"
+        }
+        // trim the last line break, then ctreate an attributed by merging the date string and the attributes
+        let trimmed  = stringToRender.trimmingCharacters(in: .whitespacesAndNewlines)
+        let attributedString = NSAttributedString(string: trimmed, attributes: attributes)
+        
+        // calculate the size required to draw the attributed string, then add the inset to all edges
+        var imageSize = attributedString.size()
+        imageSize.width += inset * 2
+        imageSize.height += inset * 2
+        
+        // create an image format thae uses @3x scale on an opaque background
+        let format = UIGraphicsImageRendererFormat()
+        format.opaque = true
+        format.scale = 3
+        
+        // creat a renderer at the correct size, using the above format
+        let renderer = UIGraphicsImageRenderer(size: imageSize, format: format)
+        
+        // render a series of instructiuons to image
+        let image = renderer.image { ctx in
+            // draw a solid white background
+            UIColor.white.set()
+            ctx.fill(CGRect(origin: CGPoint.zero, size: imageSize))
+            
+            // now render our text on top, using the inset we created
+            attributedString.draw(at: CGPoint(x: inset, y: inset))
+        }
+        return image
+    }
+    
+    func string(from date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm"
+       
+        return dateFormatter.string(from: date)
+    }
     
     // MARK: - Conversation Handling
     
     override func willBecomeActive(with conversation: MSConversation) {
-        // Called when the extension is about to move from the inactive to active state.
-        // This will happen when the extension is about to present UI.
-        
-        // Use this method to configure the extension and restore previously stored state.
+        if presentationStyle == .expanded {
+            displayEventViewController(conversation: conversation, identifier: "SelectDates")
+        }
     }
     
     override func didResignActive(with conversation: MSConversation) {
@@ -90,9 +177,6 @@ class MessagesViewController: MSMessagesAppViewController {
     }
     
     override func willTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
-        // Called before the extension transitions to a new presentation style.
-    
-        // Use this method to prepare for the change in presentation style.
         for child in children {
             child.willMove(toParent: nil)
             child.view.removeFromSuperview()
